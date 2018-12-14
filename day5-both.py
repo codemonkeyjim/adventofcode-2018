@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import math
+import re
+
 
 def react(chain: str) -> str:
     changed = True
@@ -14,8 +17,7 @@ def react(chain: str) -> str:
             if i == len(polymer) - 1:
                 reduced += curr
                 break
-            opposite = curr.upper() if curr.islower() else curr.lower()
-            if opposite == polymer[i+1]:
+            if curr.swapcase() == polymer[i+1]:
                 changed = True
                 i += 2
                 continue
@@ -29,6 +31,14 @@ def react(chain: str) -> str:
 #     print(f'{example}: {react(example)}')
 
 with open('data/day5.txt') as data:
-    for line in data:
-        result = react(line)
-        print(f'{len(result)}: {result}')
+    results = {}
+    min_len = math.inf
+    min_ltr = None
+    line = data.readline()
+    for ltr in range(ord('a'), ord('z') + 1):
+        ltr = chr(ltr)
+        results[ltr] = react(re.sub(ltr, '', line, flags=re.IGNORECASE))
+        if len(results[ltr]) < min_len:
+            min_len = len(results[ltr])
+            min_ltr = ltr
+    print(f'{min_len} ({min_ltr}): {results[min_ltr]}')
