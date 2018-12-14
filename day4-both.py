@@ -38,12 +38,28 @@ for ts in sorted(entries.keys()):
     else:
         print('Unparseable line ({ts}): {entry}')
 
-max_guard_id = None
+max_guard_id_by_duration = None
+max_guard_id_by_instances = None
 max_duration = 0
+max_instances = 0
 for guard_id in sleep_times.keys():
     duration = sum(sleep_times[guard_id].values())
     if duration > max_duration:
         max_duration = duration
-        max_guard_id = guard_id
-max_minute = max(sleep_times[max_guard_id], key=sleep_times[max_guard_id].get)
-print(f'Guard #{max_guard_id}: minute {max_minute} duration {max_duration} (answer: {int(max_guard_id) * max_minute})')
+        max_guard_id_by_duration = guard_id
+    instances = max(sleep_times[guard_id].values())
+    if instances > max_instances:
+        max_instances = instances
+        max_guard_id_by_instances = guard_id
+max_duration_minute = max(sleep_times[max_guard_id_by_duration], key=sleep_times[max_guard_id_by_duration].get)
+max_instance_minute = max(sleep_times[max_guard_id_by_instances], key=sleep_times[max_guard_id_by_instances].get)
+print(
+    f'Guard #{max_guard_id_by_duration} has most minutes asleep: ',
+    f'minute {max_duration_minute} duration {max_duration} ',
+    f'(answer: {int(max_guard_id_by_duration) * max_duration_minute})'
+)
+print(
+    f'Guard #{max_guard_id_by_instances} has the most asleep minute: ',
+    f'minute {max_instance_minute} instances {sleep_times[max_guard_id_by_instances][max_instance_minute]} ',
+    f'(answer: {int(max_guard_id_by_instances) * max_instance_minute})'
+)
